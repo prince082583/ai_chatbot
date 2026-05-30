@@ -1,17 +1,32 @@
+import os
+from dotenv import load_dotenv
 from openai import OpenAI
 
+load_dotenv()
+
 client = OpenAI(
-    api_key="OPENAI_API_KEY"
+    api_key=os.getenv("OPENAI_API_KEY")
 )
 
-response = client.chat.completions.create(
-    model="gpt-4.1-mini",
-    messages=[
-        {
-            "role": "user",
-            "content": "Explain AI in simple words"
-        }
-    ]
-)
+print("AI Chatbot Started")
+print("Type 'quit' to exit")
 
-print(response.choices[0].message.content)
+while True:
+    user_input = input("\nYou: ")
+
+    if user_input.lower() == "quit":
+        print("Goodbye!")
+        break
+
+try:
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "user", "content": user_input}
+        ]
+    )
+
+    print("\nBot:", response.choices[0].message.content)
+
+except Exception as e:
+    print("Error:", e)
